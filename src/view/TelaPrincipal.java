@@ -58,14 +58,6 @@ public class TelaPrincipal extends JFrame {
 
 		setContentPane(MainView);
 		MainView.setLayout(null);
-		
-		
-		
-		
-		
-		
-		
-		
 
 		
 		//// Barra de Ferramentas		
