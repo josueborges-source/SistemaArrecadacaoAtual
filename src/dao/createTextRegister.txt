@@ -1,0 +1,10 @@
+/*
+	 * CREATE TABLE DetailConveniado(tipoRegistro INT, codigoUnidadeConsumidora
+	 * BIGINT," +
+	 * "valorLancamento INT, dataGeracaoRegistro DATE, comandoMovimento VARCHAR(255),"
+	 * +
+	 * "codigoContaGerencial VARCHAR(255), coberturaOcorrencia INT, descricaoCoberturaOcorrencia DECIMAL(30,0),"
+	 * + "cpfCliente BIGINT, cnpjCliente BIGINT, complementoCNPJ INT, cpf_CNPJ
+	 * ENUM('CPF','CNPJ'), mesVigencia DATE, + mesFimVigencia DATE,
+	 * numeroSequencialDoRegistro INT)"
+*/

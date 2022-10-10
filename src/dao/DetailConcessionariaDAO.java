@@ -16,55 +16,39 @@ import java.util.Locale;
 
 import model.DetailConveniado;
 
-public class DetailConveniadoDAO {
+public class DetailConcessionariaDAO {
 
-	Connection connection;	
-	/*
-	 cd C:\Users\josue\eclipse-workspace\SistemaDeArrecadacaoDeTerceiros\
-	 SistemaDeArrecadacaoDeTerceiros\libs
-	 java -jar derbyrun.jar ij
-	 
-	 connect
-	 'jdbc:derby:C:/Users/josue/eclipse-workspace/SistemaDeArrecadacaoDeTerceiros/
-	 SistemaDeArrecadacaoDeTerceiros/acustraprograma';
-	  
-	 show tables;
-	 select * from DetailConveniado;
-	 */
-	public DetailConveniadoDAO() {
-		connection = ConnectionFactory.getConnection();
+	Connection connection;
+
+	public static void main(String[] args) {
+		new DetailConcessionariaDAO().TestesTabelas();
 	}
 
-	public static void main(String[] args) 
-	{		
-		new DetailConveniadoDAO().TestesTabelas();		
-		
+	public DetailConcessionariaDAO() {
+		connection = ConnectionFactory.getConnection();
 	}
 
 	public void TestesTabelas() {
 
-		DetailConveniadoDAO detailConveniadoDAO = new DetailConveniadoDAO();
+		DetailConcessionariaDAO detailConcessionariaDAO = new DetailConcessionariaDAO();
 
-		detailConveniadoDAO.DroparTabela();
-		detailConveniadoDAO.CriarTabela();
-		detailConveniadoDAO.InsercaoTeste();
+		detailConcessionariaDAO.DroparTabela();
+		detailConcessionariaDAO.CriarTabela();
+		detailConcessionariaDAO.InsercaoTeste();
 
-		List<DetailConveniado> listaDeDetail = detailConveniadoDAO.resgatarLista();
+		List<DetailConveniado> listaDeDetail = detailConcessionariaDAO.ResgatarLista();
 
 		for (DetailConveniado detailConveniado : listaDeDetail) {
 			System.out.println(detailConveniado);
 		}
 	}
-	
 
-	public void CriarTabela() 
-	{
-		String query = 
-				"CREATE TABLE DetailConveniado(" + "tipoRegistro INTEGER," + "codigoUnidadeConsumidora BIGINT,"
-				+ "valorLancamento INTEGER," + "dataGeracaoRegistro DATE," + "comandoMovimento VARCHAR(255),"
-				+ "codigoContaGerencial VARCHAR(255)," + "coberturaOcorrencia INTEGER,"
-				+ "descricaoCoberturaOcorrencia DECIMAL(30,0),"
-				+ "cpfCNPJ varchar(4) NOT NULL CHECK (cpfCNPJ IN('CPF', 'CNPJ'))," + "cpfCliente BIGINT,"
+	public void CriarTabela() {
+		String query = "CREATE TABLE DetailConcessionaria(" + "id INTEGER," + "identificacaoRegistro BIGINT,"
+				+ "codigoUnidadeConsumidora BIGINT" + "valorLancamento INTEGER," + "dataLancamento DATE,"
+				+ "informativoRegistro VARCHAR(255)," + "codigoContaGerencial VARCHAR(255),"
+				+ "coberturaOcorrencia INTEGER," + "descricaoCoberturaOcorrencia DECIMAL(30,0),"
+				+ "cpfCNPJ varchar(4) NOT NULL CHECK " + "(cpfCNPJ IN('CPF', 'CNPJ'))," + "cpfCliente BIGINT,"
 				+ "cnpjCliente BIGINT," + "complementoCNPJ INTEGER," + "mesVigencia DATE," + "mesFimVigencia DATE,"
 				+ "numeroSequencialDoRegistro INTEGER)";
 
@@ -83,7 +67,6 @@ public class DetailConveniadoDAO {
 
 	public void DroparTabela() {
 
-		System.out.println("Dropando tabela");
 		try {
 			String query = "DROP TABLE DetailConveniado";
 
@@ -100,14 +83,13 @@ public class DetailConveniadoDAO {
 	}
 
 	public void InsercaoTeste() {
-
-		System.out.println("Inserindo Teste");
 		try {
-			String queryInsert = "INSERT into DetailConveniado ( tipoRegistro, codigoUnidadeConsumidora, valorLancamento,  dataGeracaoRegistro,"
-					+ "comandoMovimento, codigoContaGerencial, coberturaOcorrencia, descricaoCoberturaOcorrencia, cpfCNPJ,cpfCliente,"
-					+ "cnpjCliente, complementoCNPJ, mesVigencia, mesFimVigencia, numeroSequencialDoRegistro) "
-					+ "values ( 1,  1,  1,  '1988-02-23' , 'XPTO','ContaXYZ',  1,  09876543211, 'CPF', 1234567890, "
-					+ "1234567890, 02,'1988-02-23', '1988-02-23' , 123)";
+			String queryInsert = "INSERT into DetailConcessionaria ( identificacaoRegistro, codigoUnidadeConsumidora,"
+					+ " valorLancamento,  dataGeracaoRegistro, comandoMovimento, codigoContaGerencial,"
+					+ " coberturaOcorrencia, descricaoCoberturaOcorrencia, cpfCNPJ,cpfCliente,"
+					+ "cnpjCliente, complementoCNPJ, mesVigencia, mesFimVigencia," + " numeroSequencialDoRegistro) "
+					+ "values ( 1,  1,  1,  '1988-02-23' , 'XPTO','ContaXYZ',  1,  09876543211, "
+					+ "'CPF', 1234567890, 1234567890, 02,'1988-02-23', '1988-02-23' , 123)";
 
 			PreparedStatement stmt = ConnectionFactory.getConnection().prepareStatement(queryInsert);
 
@@ -120,10 +102,11 @@ public class DetailConveniadoDAO {
 		}
 	}
 
+	// CREATE //
 	public void Salvar(DetailConveniado detailConveniado) {
 
-		System.out.println("Salvando detail conveniado");
 		try {
+
 			String sql = "INSERT into DetailConveniado ("
 					+ "tipoRegistro, codigoUnidadeConsumidora, valorLancamento, dataGeracaoRegistro, "
 					+ "comandoMovimento, codigoContaGerencial,coberturaOcorrencia, descricaoCoberturaOcorrencia,"
@@ -141,13 +124,14 @@ public class DetailConveniadoDAO {
 			stmt.setString(6, detailConveniado.getCodigoContaGerencial());
 			stmt.setInt(7, detailConveniado.getCoberturaOcorrencia());
 			stmt.setBigDecimal(8, new BigDecimal(detailConveniado.getDescricaoCoberturaOcorrencia()));
-			stmt.setString(9, detailConveniado.getCpfCnpj().name());
 
 			if (detailConveniado.getCpfCnpj() == DetailConveniado.CPF_CNPJ.CPF) {
+				stmt.setString(9, detailConveniado.getCpfCnpj().name());
 				stmt.setBigDecimal(10, detailConveniado.getCpfCliente());
 				stmt.setBigDecimal(11, null);
 				stmt.setInt(12, Integer.valueOf(0));
 			} else {
+				stmt.setString(9, detailConveniado.getCpfCnpj().name());
 				stmt.setBigDecimal(10, null);
 				stmt.setBigDecimal(11, detailConveniado.getCnpjCliente());
 				stmt.setInt(12, detailConveniado.getComplementoCNPJ());
@@ -173,10 +157,11 @@ public class DetailConveniadoDAO {
 		}
 	}
 
-	public List<DetailConveniado> resgatarLista() {
+	// READ //
+	public List<DetailConveniado> ResgatarLista() {
 
-		// System.out.println("Retornando lista");
 		List<DetailConveniado> detailConveniadoLista = new ArrayList<DetailConveniado>();
+
 		try {
 
 			PreparedStatement stmt = ConnectionFactory.getConnection()
@@ -189,17 +174,15 @@ public class DetailConveniadoDAO {
 				DetailConveniado detailConveniado = new DetailConveniado();
 
 				detailConveniado.setCoberturaOcorrencia(Integer.valueOf(rs.getString("coberturaOcorrencia")));
-				
-				
-				
+				detailConveniado.setComplementoCNPJ(Integer.valueOf(rs.getString("cnpjCliente")));
 				detailConveniado
 						.setNumeroSequencialRegistro(Integer.valueOf(rs.getString("numeroSequencialDoRegistro")));
+
 				detailConveniado.setValorLancamento(Integer.valueOf(rs.getString("valorLancamento")));
 				detailConveniado.setComandoMovimento(rs.getString("comandoMovimento"));
 
 				String mesVigencia = rs.getString("mesVigencia");
 
-				// Mes Vigencia
 				Calendar mesVigenciaCalendar = Calendar.getInstance();
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
@@ -211,46 +194,38 @@ public class DetailConveniadoDAO {
 
 				detailConveniado.setMesVigencia(mesVigenciaCalendar);
 
-				
-				
-				// Mes Fim Vigencia
 				String mesFimVigencia = rs.getString("mesFimVigencia");
-				if(mesFimVigencia!=null) {
-				System.out.println(mesFimVigencia);
 				try {
 					mesVigenciaCalendar.setTime(sdf.parse(mesFimVigencia));
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-				}
 
 				detailConveniado.setMesFimVigencia(mesVigenciaCalendar);
 
-				// Mes Data Geracao Registro
 				String dataGeracaoServico = rs.getString("dataGeracaoRegistro");
 				try {
 					mesVigenciaCalendar.setTime(sdf.parse(dataGeracaoServico));
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
+				detailConveniado.setMesFimVigencia(mesVigenciaCalendar);
+
 				detailConveniado.setDataGeracaoRegistro(mesVigenciaCalendar);
+				detailConveniado.setComplementoCNPJ(rs.getInt("complementoCNPJ"));
 
 				String cpfCliente = rs.getString("cpfCliente");
 				String cnpjCliente = rs.getString("cnpjCliente");
-				
-				System.out.println(cpfCliente);
-				System.out.println(cnpjCliente);
 
-				if (cpfCliente != null) {
+				if (cpfCliente.isEmpty()) {
 					detailConveniado.setCnpjCliente(new BigDecimal(cpfCliente));
 				} else {
-					detailConveniado.setComplementoCNPJ(rs.getInt("complementoCNPJ"));					
 					detailConveniado.setCpfCliente(new BigDecimal(cnpjCliente));
 				}
 
-				String codigoUnidadeConsumidora = rs.getString("codigoUnidadeConsumidora");
-				Long codigoUnidadeConsumidoraToLong = Long.valueOf(codigoUnidadeConsumidora);
-				detailConveniado.setCodigoUnidadeConsumidora(codigoUnidadeConsumidoraToLong);
+				String codUnidadeConsumidora = rs.getString("codigoUnidadeConsumidora");
+				Long codUnidadeConsumidoraToLong = Long.valueOf(codUnidadeConsumidora);
+				detailConveniado.setCodigoUnidadeConsumidora(codUnidadeConsumidoraToLong);
 
 				String coberturaOcorrencia = rs.getString("coberturaOcorrencia");
 				BigInteger coberturaToInt = BigInteger.valueOf(Long.parseLong(coberturaOcorrencia));
@@ -268,5 +243,83 @@ public class DetailConveniadoDAO {
 			throw new RuntimeException(e);
 		}
 		return detailConveniadoLista;
+	}
+
+	// UPDATE //
+	public void Alterar(DetailConveniado detailConveniado) {
+
+		try {
+
+			String sql = "UPDATE DetailConveniado set " + "tipoRegistro=?," + "codigoUnidadeConsumidora=?,"
+					+ "valorLancamento=?," + "dataGeracaoRegistro=?," + "comandoMovimento=?,"
+					+ "codigoContaGerencial=?," + "coberturaOcorrencia=?," + "descricaoCoberturaOcorrencia=?,"
+					+ "cpfCNPJ=?," + "cpfCliente=?," + "cnpjCliente=?," + "complementoCNPJ=?," + "mesVigencia=?,"
+					+ "mesFimVigencia=?," + "numeroSequencialDoRegistro=? where id=?)";
+
+			PreparedStatement stmt = ConnectionFactory.getConnection().prepareStatement(sql);
+
+			stmt.setInt(1, detailConveniado.getTipoRegistro());
+			stmt.setBigDecimal(2, new BigDecimal(detailConveniado.getCodigoUnidadeConsumidora().intValue()));
+			stmt.setInt(3, detailConveniado.getValorLancamento());
+			stmt.setDate(4, new Date(detailConveniado.getDataGeracaoRegistro().getTimeInMillis()));
+
+			stmt.setString(5, detailConveniado.getComandoMovimento());
+			stmt.setString(6, detailConveniado.getCodigoContaGerencial());
+			stmt.setInt(7, detailConveniado.getCoberturaOcorrencia());
+			stmt.setBigDecimal(8, new BigDecimal(detailConveniado.getDescricaoCoberturaOcorrencia()));
+
+			stmt.setString(9, detailConveniado.getCpfCnpj().name());
+
+			if (detailConveniado.getCpfCnpj() == DetailConveniado.CPF_CNPJ.CPF) {
+				stmt.setBigDecimal(10, detailConveniado.getCpfCliente());
+				stmt.setBigDecimal(11, null);
+				stmt.setInt(12, Integer.valueOf(0));
+			} else {
+				stmt.setBigDecimal(10, null);
+				stmt.setBigDecimal(11, detailConveniado.getCnpjCliente());
+				stmt.setInt(12, detailConveniado.getComplementoCNPJ());
+			}
+
+			stmt.setDate(13, new Date(detailConveniado.getMesVigencia().getTimeInMillis()));
+
+			if (detailConveniado.getMesFimVigenciaAtivado()) {
+				stmt.setDate(14, new Date(detailConveniado.getMesFimVigencia().getTimeInMillis()));
+			} else {
+				stmt.setDate(14, null);
+			}
+
+			stmt.setInt(15, detailConveniado.getNumeroSequencialRegistro());
+
+			stmt.setInt(16, detailConveniado.getId());
+
+			stmt.execute();
+			stmt.close();
+
+			connection.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+
+	// DELETE //
+	public void Deletar(DetailConveniado detailConveniado) {
+
+		try {
+
+			String sql = "DELETE DetailConveniado where id=?";
+
+			PreparedStatement stmt = ConnectionFactory.getConnection().prepareStatement(sql);
+
+			stmt.setInt(1, detailConveniado.getId());
+
+			stmt.execute();
+			stmt.close();
+
+			connection.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 }

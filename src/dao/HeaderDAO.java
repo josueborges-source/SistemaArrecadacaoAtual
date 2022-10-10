@@ -1,128 +1,252 @@
 package dao;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
+import model.DetailConveniado;
 import model.Header;
 
 import java.sql.Date;
 
-public class HeaderDAO {
+public class HeaderDAO 
+{
 
-	//private Connection connection;
+	static HeaderDAO dao = new HeaderDAO();
 
-	public HeaderDAO() {
-		// this.connection = new ConnectionFactory().getConnection();
+	Connection connection;
+
+	public HeaderDAO() 
+	{		
+		connection = ConnectionFactory.getConnection();
 	}
 
-	public static void main(String[] args) throws SQLException 
-	{
-		HeaderDAO dao = new HeaderDAO();
-		
-		
-		
-		dao.excluirTabela();
-		dao.criarTabela();
-		
-		Header header = new Header();
-		
-		header.setIdentificacaoRegistro(Integer.valueOf(1));
-		header.setContrato("01000000002022908203774000AC1");
-		header.setCodConcessionaria(Integer.valueOf(0001));
-		header.setDataEnvio(Calendar.getInstance());
-		header.setSiglaMoeda("R$");
-		
-		//// DAQUI: 
-		header.setNumeroSequencialEnvio(Integer.valueOf(00001));
-		header.setMotivosRecusa(Integer.valueOf(00));
-		header.setNomeClienteContratante("ASSOCIACAO CULTURAL");
-		header.setTipoArquivo(Integer.valueOf(2));	
-		
-		
-		dao.adiciona(header);
-		
+	public static void main(String[] args) throws SQLException {		
+		dao.CriarTabelaHeader();
+		//dao.ExcluirTabelaHeader();		
 	}
-	
-	public void excluirTabela() throws SQLException {
-		
-		Connection con = new ConnectionFactory().getConnection();		
 
-		String sql = "DROP TABLE header";
-	
-		PreparedStatement stmt = con.prepareStatement(sql);
-
-		stmt.execute();
-		stmt.close();
-		System.out.println("Tabela Excluida!");
-		con.close();	
-	}
-	
-	
-	public void criarTabela() throws SQLException {
-		
-		Connection con = new ConnectionFactory().getConnection();		
-
-		String sql = "CREATE TABLE header (identificacaoRegistro VARCHAR(1), contrato VARCHAR(56) DEFAULT '01000000002022908203774000AC1', codConcessionaria VARCHAR(4) DEFAULT '0001', "
-				+ "dataEnvio DATE, siglaMoeda VARCHAR(6) DEFAULT 'R$', numeroSequencialEnvio INT, motivosRecusa VARCHAR(2), nomeClienteContratante VARCHAR(20) DEFAULT 'ASSOCIACAO CULTURAL',"
-				+ "tipoArquivo VARCHAR(1), numeroSequencialRegistro INT NOT NULL PRIMARY KEY )";
-	
-		
-		//String sql = "DROP TABLE header";
-		PreparedStatement stmt = con.prepareStatement(sql);
-
-		stmt.execute();
-		stmt.close();
-		System.out.println("Tabela Criada!");
-		con.close();	
-	}
-	
-
+	// Create
 	public void adiciona(Header header) {
 
 		try {
-			Connection con = new ConnectionFactory().getConnection();
 
-			String sql = "INSERT into header "
-					+ "(identificacaoRegistro, contrato, codConcessionaria, dataEnvio, siglaMoeda, numeroSequencialEnvio, motivosRecusa , nomeClienteContratante, "
-					+ "tipoArquivo, numeroSequencialRegistro)" + " values (?,?,?,?,?,?,?,?,?,?)";
+			String sql = "INSERT into header (identificacaoRegistro, contrato, codConcessionaria,"
+					+ "dataEnvio, siglaMoeda, numeroSequencialEnvio, motivosRecusa , "
+					+ "nomeClienteContratante, tipoArquivo, numeroSequencialRegistro)"
+					+ " values (?,?,?,?,?,?,?,?,?,?)";
 
-			PreparedStatement stmt = con.prepareStatement(sql);
-			
+			PreparedStatement stmt = connection.prepareStatement(sql);
+
 			stmt.setInt(1, header.getIdentificacaoRegistro().intValue());
 			stmt.setString(2, header.getContrato());
-			stmt.setInt(3, header.getCodConcessionaria().intValue());
-			stmt.setDate(4, new Date( header.getDataEnvio().getTimeInMillis()));		
-			
+			stmt.setInt(3, header.getCodigoConcessionaria().intValue());
+			stmt.setDate(4, new Date(header.getDataEnvio().getTimeInMillis()));
+
 			stmt.setString(5, header.getSiglaMoeda());
 			stmt.setInt(6, header.getNumeroSequencialEnvio().intValue());
-			stmt.setInt(7, header.getMotivosRecusa().intValue());
+			stmt.setInt(7, header.getMotivoRecusa().intValue());
 			stmt.setString(8, header.getNomeClienteContratante());
-			stmt.setInt(9,header.getTipoArquivo().intValue());		
-			stmt.setInt(10,header.getNumeroSequencialRegistro().intValue());	
-			
-			
+			stmt.setInt(9, header.getTipoArquivo().intValue());
+			stmt.setInt(10, header.getNumeroSequencialRegistro().intValue());
+
 			stmt.execute();
 			stmt.close();
-			System.out.println("Dados adicionados.");
-			con.close();
-			}
-		    catch (SQLException e) {
+
+			connection.close();
+		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-
-		/*
-		 * String sql = "insert	into	contatos	" +
-		 * "(nome,email,endereco,dataNascimento)" + "	values	(?,?,?,?)"; try { //
-		 * prepared statement para inserção PreparedStatement stmt =
-		 * con.prepareStatement(sql); // seta os valores ////
-		 * stmt.setString(1,header.getNome());
-		 * 
-		 * // executa stmt.execute(); stmt.close(); } catch (SQLException e) { throw new
-		 * RuntimeException(e); }
-		 */
-
 	}
+
+	// Read - Resgatar Lista
+	public List<DetailConveniado> ResgatarLista() {
+
+		List<DetailConveniado> detailConveniadoLista = new ArrayList<DetailConveniado>();
+
+		try {
+
+			PreparedStatement stmt = ConnectionFactory.getConnection()
+					.prepareStatement("Select * From Header");
+
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+
+				DetailConveniado detailConveniado = new DetailConveniado();
+
+				detailConveniado.setCoberturaOcorrencia(Integer.valueOf(rs.getString("coberturaOcorrencia")));
+				detailConveniado.setComplementoCNPJ(Integer.valueOf(rs.getString("cnpjCliente")));
+				detailConveniado
+						.setNumeroSequencialRegistro(Integer.valueOf(rs.getString("numeroSequencialDoRegistro")));
+				detailConveniado.setValorLancamento(Integer.valueOf(rs.getString("valorLancamento")));
+				detailConveniado.setComandoMovimento(rs.getString("comandoMovimento"));
+
+				Calendar mesVigenciaCalendar;
+				SimpleDateFormat sdf;
+
+				String mesVigencia = rs.getString("mesVigencia");
+				mesVigenciaCalendar = Calendar.getInstance();
+				sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+
+				try {
+					mesVigenciaCalendar.setTime(sdf.parse(mesVigencia));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+				detailConveniado.setMesVigencia(mesVigenciaCalendar);
+
+				String mesFimVigencia = rs.getString("mesFimVigencia");
+
+				try {
+					mesVigenciaCalendar.setTime(sdf.parse(mesFimVigencia));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+				String dataGeracaoServico = rs.getString("dataGeracaoRegistro");
+				String cpfCliente = rs.getString("cpfCliente");
+				String cnpjCliente = rs.getString("cnpjCliente");
+				String codUnidadeConsumidora = rs.getString("codigoUnidadeConsumidora");
+				Long codUnidadeConsumidoraToLong = Long.valueOf(codUnidadeConsumidora);
+				String coberturaOcorrencia = rs.getString("coberturaOcorrencia");
+				BigInteger coberturaToInt = BigInteger.valueOf(Long.parseLong(coberturaOcorrencia));
+				String numeroSequencial = rs.getString("numeroSequencialDoRegistro");
+				Integer numeroSequencialToInt = Integer.valueOf(numeroSequencial);
+
+				try {
+					mesVigenciaCalendar.setTime(sdf.parse(dataGeracaoServico));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+				detailConveniado.setMesFimVigencia(mesVigenciaCalendar);
+				detailConveniado.setMesFimVigencia(mesVigenciaCalendar);
+
+				detailConveniado.setDataGeracaoRegistro(mesVigenciaCalendar);
+				detailConveniado.setComplementoCNPJ(rs.getInt("complementoCNPJ"));
+
+				detailConveniado.setCodigoUnidadeConsumidora(codUnidadeConsumidoraToLong);
+				detailConveniado.setDescricaoCoberturaOcorrencia(coberturaToInt);
+				detailConveniado.setNumeroSequencialRegistro(numeroSequencialToInt);
+
+				if (cpfCliente.isEmpty()) {
+					detailConveniado.setCnpjCliente(new BigDecimal(cpfCliente));
+				} else {
+					detailConveniado.setCpfCliente(new BigDecimal(cnpjCliente));
+				}
+
+				detailConveniadoLista.add(detailConveniado);
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return detailConveniadoLista;
+	}
+
+	// Update Header
+	public void Update(Header header) {
+			
+		String sql = "UPDATE Header set contrato=?, codigoConcessionaria=?,"
+				+ "dataEnvio=?, siglaMoeda=?, numeroSequencialEnvio=?,"
+				+ "motivoRecusa=?, nomeClienteContratante=?, espacoBrancoQuarenta=?,"
+				+ "tipoArquivo=?, numeroSequencialRegistro=? where id=?";
+
+		PreparedStatement stmt;
+		try {			
+			stmt = ConnectionFactory.getConnection().prepareStatement(sql);
+
+			stmt.setString(1, header.getContrato());
+			stmt.setInt(2, header.getCodigoConcessionaria());
+			stmt.setDate(3, new Date(header.getDataEnvio().getTimeInMillis()));
+			stmt.setString(4, header.getSiglaMoeda());
+			stmt.setInt(5, header.getNumeroSequencialEnvio());
+			stmt.setInt(6, header.getMotivoRecusa());
+			stmt.setString(7, header.getNomeClienteContratante());
+			stmt.setString(8, header.getEspacoBrancoQuarenta());
+			stmt.setInt(9, header.getTipoArquivo());
+			stmt.setInt(10, header.getNumeroSequencialRegistro());
+			stmt.setInt(11, header.getId());
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	// Delete - Header
+	public void Delete(Header header) throws SQLException 
+	{
+		String sql = "DELETE FROM header WHERE id=?";
+
+		PreparedStatement stmt = connection.prepareStatement(sql);
+
+		stmt.setInt(1, header.getId());
+
+		stmt.execute();
+		stmt.close();
+
+		connection.close();
+	
+	}
+
+	
+	public void CriarTabelaHeader() throws SQLException {
+		
+		String sql = "CREATE TABLE header (identificacaoRegistro VARCHAR(1), "
+				+ "contrato VARCHAR(56) DEFAULT '01000000002022908203774000AC1',"
+				+ "codConcessionaria VARCHAR(4) DEFAULT '0001', "
+				+ "dataEnvio DATE, siglaMoeda VARCHAR(6) DEFAULT 'R$', numeroSequencialEnvio INT, "
+				+ "motivosRecusa VARCHAR(2), nomeClienteContratante VARCHAR(20) DEFAULT 'ASSOCIACAO CULTURAL', "
+				+ "tipoArquivo VARCHAR(1), numeroSequencialRegistro INT NOT NULL PRIMARY KEY )";
+		
+		PreparedStatement stmt = connection.prepareStatement(sql);
+		
+		stmt.execute();
+		stmt.close();
+		connection.close();
+	}
+	
+	public void ExcluirTabelaHeader() throws SQLException {
+		String sql = "DROP TABLE header";
+
+		PreparedStatement stmt = connection.prepareStatement(sql);
+
+		stmt.execute();
+		stmt.close();
+		connection.close();
+	}
+	
+	public Integer SelecionarMaiorID() throws SQLException {
+		
+		Integer id = 0;
+		
+		String sql = "select max(id) from TABLE header";
+
+		PreparedStatement stmt = connection.prepareStatement(sql);
+		
+		stmt = connection.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();
+		
+		
+		if (rs.next()) {
+			id = rs.getInt("max_id") + 1;
+		}
+		return id;
+	}
+
+
+
 
 }
