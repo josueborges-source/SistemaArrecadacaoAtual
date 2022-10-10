@@ -8,7 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import view.TelasCadastro.AtualizarCadastro;
 import view.TelasCadastro.EnviarRemessaCadastro;
-import view.TelasCadastro.NovoCadastro;
+import view.TelasCadastro.NovoCadastroPainel;
 import view.TelasCadastro.ReceberRemessaCadastro;
 import view.TelasCadastro.RegistrosCadastro;
 
@@ -32,8 +32,7 @@ public class TelaPrincipal extends JFrame {
 	SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyyy");
 	String formatted = format1.format(Calendar.getInstance().getTime());
 	JLabel dataAtualDeCadastroText = new JLabel(formatted);
-	
-	
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -47,10 +46,8 @@ public class TelaPrincipal extends JFrame {
 		});
 	}
 
-	
 	public TelaPrincipal() {
 
-		// dataAtualDeCadastroText.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 950, 580);
 		MainView = new JPanel();
@@ -59,21 +56,20 @@ public class TelaPrincipal extends JFrame {
 		setContentPane(MainView);
 		MainView.setLayout(null);
 
-		
-		//// Barra de Ferramentas		
+		//// Barra de Ferramentas
 		JToolBar barraDeFerramentas = new JToolBar();
 		barraDeFerramentas.setBounds(0, 0, 932, 33);
 		MainView.add(barraDeFerramentas);
 
 		JButton novoCadastro = new JButton("Novo Cadastro");
+		
 		novoCadastro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				CardLayout tela1 = (CardLayout) Views.getLayout();
 				tela1.show(Views, "tela1");
 			}
-		});		
-		
+		});
 
 		JButton atualizarCadastro = new JButton("Atualizar Cadastro");
 		atualizarCadastro.addActionListener(new ActionListener() {
@@ -83,7 +79,6 @@ public class TelaPrincipal extends JFrame {
 				tela2.show(Views, "tela2");
 			}
 		});
-		
 
 		JButton enviarRemessa = new JButton("Enviar Remessa");
 		enviarRemessa.addActionListener(new ActionListener() {
@@ -93,7 +88,6 @@ public class TelaPrincipal extends JFrame {
 				tela3.show(Views, "tela3");
 			}
 		});
-		
 
 		JButton receberRemessa = new JButton("Receber Remessa");
 		receberRemessa.addActionListener(new ActionListener() {
@@ -103,7 +97,6 @@ public class TelaPrincipal extends JFrame {
 				tela4.show(Views, "tela4");
 			}
 		});
-		
 
 		JButton verRegistros = new JButton("Ver Registros");
 		verRegistros.addActionListener(new ActionListener() {
@@ -114,7 +107,7 @@ public class TelaPrincipal extends JFrame {
 
 			}
 		});
-		
+
 		barraDeFerramentas.add(novoCadastro);
 		barraDeFerramentas.add(atualizarCadastro);
 		barraDeFerramentas.add(enviarRemessa);
@@ -123,31 +116,31 @@ public class TelaPrincipal extends JFrame {
 
 		Views.setBounds(0, 44, 932, 494);
 		MainView.add(Views);
-		Views.setLayout(new CardLayout(0, 0));		
-		
+		Views.setLayout(new CardLayout(0, 0));
+
 		/// Novo Cadastro Panel
-		JPanel novoCadastroPainel = new NovoCadastro().retornaPainel();
+		JPanel novoCadastroPainel = new NovoCadastroPainel().retornaPainel();
 		Views.add(novoCadastroPainel, "tela1");
 		novoCadastroPainel.setLayout(null);
-		
-		//// Atualizar Cadastro	Panel
+
+		//// Atualizar Cadastro Panel
 		JPanel atualizarCadastroPanel = new AtualizarCadastro().retornaPainel();
 		Views.add(atualizarCadastroPanel, "tela2");
 		atualizarCadastroPanel.setLayout(null);
-		
+
 		//// Enviar Remessa Panel
 		JPanel enviarRemessaPanel = new EnviarRemessaCadastro().retornaPainel();
 		Views.add(enviarRemessaPanel, "tela3");
-		enviarRemessaPanel.setLayout(null);		
-		
+		enviarRemessaPanel.setLayout(null);
+
 		//// Receber Remessa Panel
 		JPanel receberRemessaPanel = new ReceberRemessaCadastro().retornaPainel();
 		Views.add(receberRemessaPanel, "tela4");
-		receberRemessaPanel.setLayout(null);			
-		
+		receberRemessaPanel.setLayout(null);
+
 		///// Registros Panel
 		JPanel registrosPanel = new RegistrosCadastro().retornaPainel();
 		Views.add(registrosPanel, "tela5");
-		registrosPanel.setLayout(null);		
+		registrosPanel.setLayout(null);
 	}
 }

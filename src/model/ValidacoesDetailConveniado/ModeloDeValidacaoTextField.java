@@ -1,4 +1,4 @@
-package model;
+package model.ValidacoesDetailConveniado;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -32,14 +32,16 @@ public class ModeloDeValidacaoTextField
 		}
 	}		
 	
-	public ModeloDeValidacaoTextField(JTextField textField, String nomeDaVariavelParaMensagemDeErro, int tamanhoMinimo, int tamanhoMaximo) {
+	public ModeloDeValidacaoTextField(JTextField textField, String nomeDaVariavelParaMensagemDeErro, 
+			int tamanhoMinimo, int tamanhoMaximo) {
 		this.tamanhoMinimo=tamanhoMinimo;
 		this.tamanhoMaximo=tamanhoMaximo;
 		this.textField = textField;
 		this.nomeDaVariavelParaMensagemDeErro = nomeDaVariavelParaMensagemDeErro;		
 	}
 	
-	public ModeloDeValidacaoTextField(Regex regex, JTextField textField, String nomeDaVariavelParaMensagemDeErro, int tamanhoMinimo, int tamanhoMaximo) {
+	public ModeloDeValidacaoTextField(Regex regex, JTextField textField, String nomeDaVariavelParaMensagemDeErro,
+			int tamanhoMinimo, int tamanhoMaximo) {
 		this.formatosValidosRegex.add(regex);
 		this.tamanhoMinimo=tamanhoMinimo;
 		this.tamanhoMaximo=tamanhoMaximo;
@@ -72,16 +74,16 @@ public class ModeloDeValidacaoTextField
 	}
 	
 	public Integer getConteudoToInteger() {
-		return Integer.getInteger(getConteudoTextField());
+		return Integer.valueOf(getConteudoTextField());
 	}
 	
 	public Long getConteudoToLong() {
-		return Long.getLong(getConteudoTextField());
+		return Long.valueOf(getConteudoTextField());
 	}
 
 	public void setJTextField(JTextField textField) {
 		this.textField = textField;
-	}		
+	}
 	
 	
 	public String getFormatoRegex() {
@@ -107,7 +109,6 @@ public class ModeloDeValidacaoTextField
 	public void setTamanhoMinimo(int tamanhoMinimo) {
 		this.tamanhoMinimo = tamanhoMinimo;
 	}
-
 	
 	public void setNomeDaVariavelParaMensagemDeErro(String string) {
 		this.nomeDaVariavelParaMensagemDeErro = string;		
@@ -118,7 +119,7 @@ public class ModeloDeValidacaoTextField
 	}
 	
 	public boolean estaVazio() {
-		if(textField.getText().isEmpty()||textField.getText().isBlank()) {
+		if(textField.getText().trim().isEmpty()) {
 		JOptionPane.showMessageDialog(null, "Campo " + getNomeDaVariavelParaMensagemDeErro() + " Deve Ser Preenchido");
 		return true;
 		}
@@ -133,8 +134,7 @@ public class ModeloDeValidacaoTextField
 		String unidadeConsumidoraField = getTextField().getText();				
 		
 		System.out.println("Field: " + nomeDaVariavelParaMensagemDeErro + ", Regex:" + unidadeConsumidoraRegex);		
-				
-		
+						
 		Pattern pattern = Pattern.compile(unidadeConsumidoraRegex, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(unidadeConsumidoraField);
 				

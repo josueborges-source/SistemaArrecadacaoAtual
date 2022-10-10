@@ -2,6 +2,7 @@ package view.TelasCadastro;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,8 +18,7 @@ import com.toedter.calendar.JDateChooser;
 
 import dao.DetailConveniadoDAO;
 import model.DetailConveniado;
-import model.DetailConveniado.CPF_CPNJ;
-import model.ModeloDeValidacaoTextField;
+import model.ValidacoesDetailConveniado.ModeloDeValidacaoTextField;
 import util.Util;
 
 public class AtualizarCadastro {
@@ -28,24 +28,25 @@ public class AtualizarCadastro {
 	final JTextField cpfCnpjTextField = new JTextField();
 	final JLabel registroLabel = new JLabel("Registro:");
 	final JLabel cadastroLabel = new JLabel("Cadastro:");
-	final JLabel unidadeConsumidoraTextField_1 = new JLabel("Unidade Consumidora:");
+	
+	final JLabel unidadeConsumidoraTextField_1 = new JLabel("Unidade Consumidora:");	
 	final JTextField unidadeConsumidoraTextField = new JTextField();
 	final JLabel inicioLabel = new JLabel("Inicio:");
 	final JLabel valorDoacao = new JLabel("Valor Doação:");
 	final JTextField valorDoacaoTextField = new JTextField();
-	final JButton salvarCadastroButton = new JButton("Salvar Cadastro");
 	
-	final JButton buscarButton = new JButton("Buscar");
-	
+	final JButton salvarCadastroButton = new JButton("Salvar Cadastro");	
+	final JButton buscarButton = new JButton("Buscar");	
 	final JTextField comandoDeMovimentoTextField = new JTextField();
 	final JTextField descricaoOcorrenciaTextField = new JTextField();
 	final JLabel descricaoDeOcorrenciaLabel = new JLabel("Descrição de Ocorrência:");
+	
 	final JTextField coberturaOcorrenciaTextField = new JTextField();
-
 	final JLabel registroTextField = new JLabel("000001");
 	final JDateChooser dateChooserInicio = new JDateChooser();
 	final JDateChooser dateChooserFim = new JDateChooser();
 	final JRadioButton cpf_rdnButton = new JRadioButton("CPF");
+	
 	final JRadioButton cnpj_rdnButton = new JRadioButton("CNPJ");
 	final JLabel labelFim = new JLabel("Fim:");
 	final JCheckBox chckbxTmpContrato = new JCheckBox("Tempo de contrato definido");
@@ -164,7 +165,7 @@ public class AtualizarCadastro {
 				String dataDeCadastro = dataAtualDeCadastroText.getText();
 
 				dataDeCadastro = Util.SomenteNumeros(dataDeCadastro);
-				detailConveniado.setDataGeracaoRegistro(Integer.getInteger(dataDeCadastro));
+				detailConveniado.setDescricaoCoberturaOcorrencia(new BigInteger(dataDeCadastro));
 
 				System.out.println(dataDeCadastro);
 
@@ -259,12 +260,13 @@ public class AtualizarCadastro {
 					if (ultimoModeloEValido) {
 
 						if (cpfAtivado) {
-							detailConveniado.setCpfCnpj(CPF_CPNJ.CPF);
-							detailConveniado.setCpfCliente(Long.parseLong(cpfCNPJModelo.getTextField().getText()));
+							detailConveniado.setCpfCnpj(DetailConveniado.CPF_CNPJ.CPF);
+							detailConveniado.setCpfCliente(new BigDecimal(cpfCNPJModelo.getTextField().getText()));
 						} else {
-							detailConveniado.setCpfCnpj(CPF_CPNJ.CNPJ);
-							detailConveniado.setCnpjCliente(Long.parseLong(cpfCNPJModelo.getTextField().getText()));
-						}
+							detailConveniado.setCpfCnpj(DetailConveniado.CPF_CNPJ.CNPJ);
+							detailConveniado.setCnpjCliente(new BigDecimal(cpfCNPJModelo.getTextField().getText()));
+						}						
+						
 					}
 				}
 
@@ -272,7 +274,6 @@ public class AtualizarCadastro {
 				 * Campo 2.12: Mês de inicio vigência. Início cobrança. Sempre utilizar o mês
 				 * seguinte.
 				 */
-
 				Date data = dateChooserInicio.getDate();		
 								
 				Calendar calendar = Calendar.getInstance();

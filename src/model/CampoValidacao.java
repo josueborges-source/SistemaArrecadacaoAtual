@@ -25,8 +25,5 @@ public class CampoValidacao
 	}
 	public void setLabelDoForm(JLabel labelDoForm) {
 		this.labelDoForm = labelDoForm;
-	}
-
-	
-	
+	}	
 }

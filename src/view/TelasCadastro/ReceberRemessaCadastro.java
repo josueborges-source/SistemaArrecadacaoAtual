@@ -7,12 +7,10 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 public class ReceberRemessaCadastro {
-
 	
 	public JPanel retornaPainel() {	
 			
-			JPanel remessaPainel = new JPanel();
-			
+			JPanel remessaPainel = new JPanel();		
 			
 			JButton selecionarArquivoDeRemessa = new JButton("Selecionar Arquivo de Remessa");
 			selecionarArquivoDeRemessa.setBounds(646, 11, 274, 23);

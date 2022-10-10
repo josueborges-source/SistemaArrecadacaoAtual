@@ -2,6 +2,7 @@ package view.TelasCadastro;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,13 +18,14 @@ import com.toedter.calendar.JDateChooser;
 
 import dao.DetailConveniadoDAO;
 import model.DetailConveniado;
-import model.DetailConveniado.CPF_CPNJ;
-import model.ModeloDeValidacaoTextField;
+import model.ValidacoesDetailConveniado.ModeloDeValidacaoTextField;
+import model.ValidacoesDetailConveniado.ValidacaoDeTodosCamposNovoCadastro;
 import util.Util;
 
-public class NovoCadastro {
+public class NovoCadastroPainelBackup {
 
 	final JPanel novoCadastro = new JPanel();
+
 	final JLabel dataAtualDeCadastroText = new JLabel("17/07/2022");
 	final JTextField cpfCnpjTextField = new JTextField();
 	final JLabel registroLabel = new JLabel("Registro:");
@@ -37,13 +39,15 @@ public class NovoCadastro {
 	final JTextField comandoDeMovimentoTextField = new JTextField();
 	final JTextField descricaoOcorrenciaTextField = new JTextField();
 	final JLabel descricaoDeOcorrenciaLabel = new JLabel("Descrição de Ocorrência:");
-	final JTextField coberturaOcorrenciaTextField = new JTextField();	
+	final JTextField coberturaOcorrenciaTextField = new JTextField();
 
 	final JLabel registroTextField = new JLabel("000001");
 	final JDateChooser dateChooserInicio = new JDateChooser();
 	final JDateChooser dateChooserFim = new JDateChooser();
+
 	final JRadioButton cpf_rdnButton = new JRadioButton("CPF");
 	final JRadioButton cnpj_rdnButton = new JRadioButton("CNPJ");
+
 	final JLabel labelFim = new JLabel("Fim:");
 	final JCheckBox chckbxTmpContrato = new JCheckBox("Tempo de contrato definido");
 
@@ -54,12 +58,19 @@ public class NovoCadastro {
 
 	final ButtonGroup cpfCnpjButtonGroup = new ButtonGroup();
 
-	/**
-	 * @wbp.parser.entryPoint
-	 */
+	public void popularCamposDoPainelParaTeste() {
+		cpfCnpjTextField.setText("12345678901");
+		unidadeConsumidoraTextField.setText("123456789012");
+		valorDoacaoTextField.setText("123");
+		comandoDeMovimentoTextField.setText("12");
+		descricaoOcorrenciaTextField.setText("123456789012345678901234567890");
+		coberturaOcorrenciaTextField.setText("12");
+	}
+
 	public JPanel retornaPainel() {
 
-		Init();
+		inicializarComponentes();
+		popularCamposDoPainelParaTeste();
 
 		JPanel novoCadastro = new JPanel();
 
@@ -86,7 +97,7 @@ public class NovoCadastro {
 		novoCadastro.add(valorDoacaoTextField);
 		novoCadastro.add(chckbxTmpContrato);
 		novoCadastro.add(salvarCadastroButton);
-		
+
 		cpfCnpjButtonGroup.add(cpf_rdnButton);
 		cpfCnpjButtonGroup.add(cnpj_rdnButton);
 
@@ -103,9 +114,8 @@ public class NovoCadastro {
 			}
 		});
 
-		salvarCadastroButton.addActionListener(
-			new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+		salvarCadastroButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				DetailConveniadoDAO detailDAO = new DetailConveniadoDAO();
 
 				// DETAIL CONVENIADO MODELO
@@ -114,7 +124,73 @@ public class NovoCadastro {
 				/// ArrayList<ModeloDeValidacaoTextField>();
 
 				boolean ultimoModeloEValido = true;
-				boolean errosNoPainel = false;
+
+				boolean todosCamposSaoValidos = new ValidacaoDeTodosCamposNovoCadastro()
+						.TodosCamposDoPainelSaoValidos();
+
+				if (todosCamposSaoValidos) {
+					detailConveniado.setCodigoUnidadeConsumidora(null);
+
+					detailConveniado.setComandoMovimento(null);
+
+					detailConveniado.setValorLancamento(null);
+
+					detailConveniado.setCoberturaOcorrencia(null);
+
+					detailConveniado.setDescricaoCoberturaOcorrencia(null);
+
+					detailConveniado.setCpfCliente(null);
+
+					detailConveniado.setCnpjCliente(null);
+
+					String registroNumero = registroTextField.getText();
+					detailConveniado.setNumeroSequencialRegistro(Integer.valueOf(registroNumero));
+
+					Date data = dateChooserInicio.getDate();
+
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(data);
+
+					calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
+					detailConveniado.setMesVigencia(calendar);
+
+					if (chckbxTmpContrato.isSelected()) {
+
+						data = dateChooserFim.getDate();
+
+						calendar.setTime(data);
+
+						calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
+
+						detailConveniado.setMesFimVigencia(calendar);
+						/*
+						 * System.out.println(detailConveniado.getMesVigencia().get(Calendar.
+						 * DAY_OF_MONTH));
+						 * System.out.println(detailConveniado.getMesVigencia().get(Calendar.MONTH));
+						 * System.out.println(detailConveniado.getMesVigencia().get(Calendar.YEAR));
+						 */
+					}
+					detailDAO.Salvar(detailConveniado);
+				}
+				/*
+				 * Data Inicio Chooser
+				 */
+
+				/*
+				 * System.out.println(detailConveniado.getMesVigencia().get(Calendar.
+				 * DAY_OF_MONTH));
+				 * System.out.println(detailConveniado.getMesVigencia().get(Calendar.MONTH));
+				 * System.out.println(detailConveniado.getMesVigencia().get(Calendar.YEAR));
+				 */
+
+				
+
+				/// Fim Implantação
+
+				/*
+				 * if (!errosNoPainel) { detailDAO.Salvar(detailConveniado); }
+				 */
+
 				/*
 				 * Campo 2.01: Identificação do Tipo De Registro. tipoRegistro CHAR Tamanho
 				 * Mínimo: 1 caracteres, Tamanho Máximo: 1 Caracteres - Fixo
@@ -126,7 +202,6 @@ public class NovoCadastro {
 				 * caracteres Deve ser preenchido com zeros à esquerda do inteiro como formato
 				 * original
 				 */
-
 				ModeloDeValidacaoTextField unidadeConsumidoraModelo = new ModeloDeValidacaoTextField(
 						ModeloDeValidacaoTextField.Regex.Numerico, unidadeConsumidoraTextField, "Unidade Consumidora",
 						0, 13);
@@ -159,13 +234,13 @@ public class NovoCadastro {
 				 */
 				String dataDeCadastro = dataAtualDeCadastroText.getText();
 
-				dataDeCadastro = Util.SomenteNumeros(dataDeCadastro);
-				detailConveniado.setDataGeracaoRegistro(Integer.getInteger(dataDeCadastro));
-
 				System.out.println(dataDeCadastro);
 
+				dataDeCadastro = Util.SomenteNumeros(dataDeCadastro);
+				detailConveniado.setDataGeracaoRegistro(Calendar.getInstance());
+
 				/*
-				 * Campo 2.05: Comando do Movimento Comando de Movimento CHAR TextField:
+				 * Campo 2.05: Comando de Movimento CHAR TextField:
 				 * codigoComandoMovimentoJTextField Nota 07 Tamanho Mínimo: 2 Tamanho Máximo: //
 				 * 2 caracteres
 				 */
@@ -196,8 +271,9 @@ public class NovoCadastro {
 				ultimoModeloEValido = coberturaOcorrenciaModelo.eValido();
 
 				if (ultimoModeloEValido) {
-					detailConveniado.setCoberturaOcorrencia(
-							Integer.getInteger(coberturaOcorrenciaModelo.getConteudoTextField()));
+					Integer integer = Integer.valueOf(coberturaOcorrenciaModelo.getConteudoTextField());
+					System.out.println("Integer: " + integer);
+					detailConveniado.setCoberturaOcorrencia(integer);
 				}
 
 				/*
@@ -233,13 +309,11 @@ public class NovoCadastro {
 					boolean cpfAtivado = cpf_rdnButton.isSelected();
 
 					String cpfCnpj = Util.SomenteNumeros(cpfCnpjTextField.getText());
-					cpfCnpjTextField.setText(cpfCnpj);
+					// cpfCnpjTextField.setText(cpfCnpj);
 
 					ModeloDeValidacaoTextField cpfCNPJModelo = new ModeloDeValidacaoTextField(cpfCnpjTextField,
 							"CPF/CNPJ");
 					cpfCNPJModelo.adicionarRegexDeValidacao(ModeloDeValidacaoTextField.Regex.Numerico);
-
-					System.out.println("cpfAtivado: " + cpfAtivado);
 
 					if (cpfAtivado) {
 						cpfCNPJModelo.setTamanhoMinimo(11);
@@ -255,11 +329,23 @@ public class NovoCadastro {
 					if (ultimoModeloEValido) {
 
 						if (cpfAtivado) {
-							detailConveniado.setCpfCnpj(CPF_CPNJ.CPF);
-							detailConveniado.setCpfCliente(Long.parseLong(cpfCNPJModelo.getTextField().getText()));
+							detailConveniado.setCpfCnpj(DetailConveniado.CPF_CNPJ.CPF);
+
+							String modeloTextField = cpfCNPJModelo.getTextField().getText();
+							Long valor = Long.valueOf(modeloTextField);
+							BigDecimal cpfValor = BigDecimal.valueOf(valor);
+
+							detailConveniado.setCpfCliente(cpfValor);
 						} else {
-							detailConveniado.setCpfCnpj(CPF_CPNJ.CNPJ);
-							detailConveniado.setCnpjCliente(Long.parseLong(cpfCNPJModelo.getTextField().getText()));
+							detailConveniado.setCpfCnpj(DetailConveniado.CPF_CNPJ.CNPJ);
+
+							String cnpj = cpfCNPJModelo.getTextField().getText();
+							detailConveniado.setCnpjCliente(
+									BigDecimal.valueOf(Long.getLong(cnpj.substring(0, cnpj.length() - 2))));
+
+							Integer inteiro = Integer.valueOf(cnpj.substring(cnpj.length() - 2));
+
+							detailConveniado.setComplementoCNPJ(inteiro);
 						}
 					}
 				}
@@ -269,78 +355,60 @@ public class NovoCadastro {
 				 * seguinte.
 				 */
 
-				Date data = dateChooserInicio.getDate();		
-								
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(data);
-				
-				calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
-				
-				detailConveniado.setMesVigencia(calendar);
-				
-				System.out.println(detailConveniado.getMesVigencia().get(Calendar.DAY_OF_MONTH));
-				System.out.println(detailConveniado.getMesVigencia().get(Calendar.MONTH));
-				System.out.println(detailConveniado.getMesVigencia().get(Calendar.YEAR));				
-										
 				/*
-				Integer dia = calendar.get(Calendar.DAY_OF_MONTH);
-				Integer mes = calendar.get(Calendar.MONTH) + 1;
-				Integer ano = calendar.get(Calendar.YEAR);	
-				*/
+				 * Date data = dateChooserInicio.getDate();
+				 * 
+				 * Calendar calendar = Calendar.getInstance(); calendar.setTime(data);
+				 * 
+				 * calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
+				 * 
+				 * detailConveniado.setMesVigencia(calendar);
+				 * 
+				 * System.out.println(detailConveniado.getMesVigencia().get(Calendar.
+				 * DAY_OF_MONTH));
+				 * System.out.println(detailConveniado.getMesVigencia().get(Calendar.MONTH));
+				 * System.out.println(detailConveniado.getMesVigencia().get(Calendar.YEAR));
+				 */
+
 				/*
-				String diaTexto;
-				String mesTexto;
-				String anoTexto;
-				
-				if(dia < 10) {
-					diaTexto = "0" + dia;
-				}
-				else {
-					diaTexto = dia.toString();
-				}
-				if(mes < 10) {
-					mesTexto = "0" + dia;
-				}
-				else {
-					mesTexto = mes.toString();
-				}
-				anoTexto=ano.toString();					
-				*/
+				 * Integer dia = calendar.get(Calendar.DAY_OF_MONTH); Integer mes =
+				 * calendar.get(Calendar.MONTH) + 1; Integer ano = calendar.get(Calendar.YEAR);
+				 */
 				/*
-				System.out.println(dia +"" +  mes + "" + ano);				
-				Integer mesAno = Integer.getInteger(mes + "" + ano);				
-				System.out.println(mesAno);
-				*/				
+				 * String diaTexto; String mesTexto; String anoTexto;
+				 * 
+				 * if(dia < 10) { diaTexto = "0" + dia; } else { diaTexto = dia.toString(); }
+				 * if(mes < 10) { mesTexto = "0" + dia; } else { mesTexto = mes.toString(); }
+				 * anoTexto=ano.toString();
+				 */
+				/*
+				 * System.out.println(dia +"" + mes + "" + ano); Integer mesAno =
+				 * Integer.getInteger(mes + "" + ano); System.out.println(mesAno);
+				 */
 
 				/*
 				 * Campo 2.13: Mês de fim vigência. Fim vigência.
+				 */			
+
+				/*
+				 * Campo 2.14
 				 */
-				if (chckbxTmpContrato.isSelected() == true) {
-					
-					data = dateChooserFim.getDate();	
-					
-					calendar.setTime(data);
-					
-					calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
-					
-					detailConveniado.setMesFimVigencia(calendar);
-					
-					System.out.println(detailConveniado.getMesVigencia().get(Calendar.DAY_OF_MONTH));
-					System.out.println(detailConveniado.getMesVigencia().get(Calendar.MONTH));
-					System.out.println(detailConveniado.getMesVigencia().get(Calendar.YEAR));	
-				}
-				
-				if(!errosNoPainel) {
-				detailDAO.Salvar(detailConveniado);
-				}
-			}				
+				/*
+				 * if (ultimoModeloEValido) { String registroNumero =
+				 * registroTextField.getText();
+				 * detailConveniado.setNumeroSequencialRegistro(Integer.valueOf(registroNumero))
+				 * ; }
+				 * 
+				 * if (!errosNoPainel) { detailDAO.Salvar(detailConveniado); }
+				 */
+			}
 		});
 
 		return novoCadastro;
 	}
 
-	public void Init() {
-		System.out.println("Init");
+	public void inicializarComponentes() {
+		/// System.out.println("Init");
 		labelFim.setEnabled(false);
 		labelFim.setBounds(646, 351, 47, 14);
 		cpfCnpjTextField.setBounds(178, 229, 588, 22);
@@ -373,6 +441,122 @@ public class NovoCadastro {
 		cpfCnpjTextField.setColumns(10);
 		coberturaOcorrenciaTextField.setColumns(10);
 		unidadeConsumidoraTextField.setColumns(10);
+	}
+
+	public JTextField getCpfCnpjTextField() {
+		return cpfCnpjTextField;
+	}
+
+	public JRadioButton getCpf_rdnButton() {
+		return cpf_rdnButton;
+	}
+
+	public ButtonGroup getCpfCnpjButtonGroup() {
+		return cpfCnpjButtonGroup;
+	}
+
+	public JRadioButton getCnpj_rdnButton() {
+		return cnpj_rdnButton;
+	}
+
+	public Date getDateAndTime() {
+		return dateAndTime;
+	}
+
+	public void setDateAndTime(Date dateAndTime) {
+		this.dateAndTime = dateAndTime;
+	}
+
+	public JLabel getComandoDeMovimentoLabel() {
+		return comandoDeMovimentoLabel;
+	}
+
+	public void setComandoDeMovimentoLabel(JLabel comandoDeMovimentoLabel) {
+		this.comandoDeMovimentoLabel = comandoDeMovimentoLabel;
+	}
+
+	public JLabel getCoberturaOcorrencia() {
+		return coberturaOcorrencia;
+	}
+
+	public void setCoberturaOcorrencia(JLabel coberturaOcorrencia) {
+		this.coberturaOcorrencia = coberturaOcorrencia;
+	}
+
+	public JPanel getNovoCadastro() {
+		return novoCadastro;
+	}
+
+	public JLabel getDataAtualDeCadastroText() {
+		return dataAtualDeCadastroText;
+	}
+
+	public JLabel getRegistroLabel() {
+		return registroLabel;
+	}
+
+	public JLabel getCadastroLabel() {
+		return cadastroLabel;
+	}
+
+	public JLabel getUnidadeConsumidoraTextField_1() {
+		return unidadeConsumidoraTextField_1;
+	}
+
+	public JTextField getUnidadeConsumidoraTextField() {
+		return unidadeConsumidoraTextField;
+	}
+
+	public JLabel getInicioLabel() {
+		return inicioLabel;
+	}
+
+	public JLabel getValorDoacao() {
+		return valorDoacao;
+	}
+
+	public JTextField getValorDoacaoTextField() {
+		return valorDoacaoTextField;
+	}
+
+	public JButton getSalvarCadastroButton() {
+		return salvarCadastroButton;
+	}
+
+	public JTextField getComandoDeMovimentoTextField() {
+		return comandoDeMovimentoTextField;
+	}
+
+	public JTextField getDescricaoOcorrenciaTextField() {
+		return descricaoOcorrenciaTextField;
+	}
+
+	public JLabel getDescricaoDeOcorrenciaLabel() {
+		return descricaoDeOcorrenciaLabel;
+	}
+
+	public JTextField getCoberturaOcorrenciaTextField() {
+		return coberturaOcorrenciaTextField;
+	}
+
+	public JLabel getRegistroTextField() {
+		return registroTextField;
+	}
+
+	public JDateChooser getDateChooserInicio() {
+		return dateChooserInicio;
+	}
+
+	public JDateChooser getDateChooserFim() {
+		return dateChooserFim;
+	}
+
+	public JLabel getLabelFim() {
+		return labelFim;
+	}
+
+	public JCheckBox getChckbxTmpContrato() {
+		return chckbxTmpContrato;
 	}
 
 }
