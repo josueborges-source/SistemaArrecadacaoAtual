@@ -1,0 +1,11 @@
+/*
+java -jar derbyrun.jar ij 
+
+cd C:/Users/josue/eclipse-workspace/SistemaDeArrecadacaoDeTerceiros/
+SistemaDeArrecadacaoDeTerceiros/libs
+
+connect 'jdbc:derby:C:/Users/josue/eclipse-workspace/SistemaDeArrecadacaoDeTerceiros/SistemaDeArrecadacaoDeTerceiros/acustraprograma'; 
+
+show tables;
+select * from DetailConveniado;
+ */	
