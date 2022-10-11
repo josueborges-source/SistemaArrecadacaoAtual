@@ -288,4 +288,70 @@ public class DetailConveniado {
 		return formatoTexto.toString();		
 	}
 	
+	public String formatoExportacaoTXT() {
+		
+		
+		int day = this.dataGeracaoRegistro.get(Calendar.DAY_OF_MONTH);
+    	int month = this.dataGeracaoRegistro.get(Calendar.MONTH);
+    	int year = this.dataGeracaoRegistro.get(Calendar.YEAR);		
+    	String campoDesabilitadoDatail2 = "";
+		
+		StringBuilder textoExportacaoTXT = new StringBuilder();
+
+		textoExportacaoTXT.append(this.tipoRegistro);
+		textoExportacaoTXT.append(RetornaComZerosAFrente(13, this.codigoUnidadeConsumidora));
+		textoExportacaoTXT.append(RetornaComZerosAFrente(9, this.valorLancamento));
+		textoExportacaoTXT.append(RetornaComZerosAFrente(2, day));
+		textoExportacaoTXT.append(RetornaComZerosAFrente(2, month));
+		textoExportacaoTXT.append(RetornaComZerosAFrente(4, year));
+		textoExportacaoTXT.append(this.comandoMovimento);
+		textoExportacaoTXT.append(RetornaComZerosAFrente(8, this.codigoContaGerencial));
+		textoExportacaoTXT.append(RetornaComZerosAFrente(2, this.coberturaOcorrencia));
+		textoExportacaoTXT.append(RetornaComVazioAFrente(30, this.descricaoCoberturaOcorrencia));
+		textoExportacaoTXT.append(RetornaComVazioAFrente(16, campoDesabilitadoDatail2));
+		
+		if(this.cpfCliente.toString().length() > 0) 
+			textoExportacaoTXT.append(RetornaComVazioAtras(12, this.cpfCliente));
+		else 
+			textoExportacaoTXT.append(RetornaComVazioAtras(12, this.cnpjCliente));		
+
+		return textoExportacaoTXT.toString();
+	}
+
+	public String RetornaComZerosAFrente(int tamanhoSaida, Object textoOriginal) {
+		String prefixo = "";
+		Integer tamanhoDoTexto = textoOriginal.toString().length();
+		if (tamanhoDoTexto < tamanhoSaida) {
+			int quantidadeZeros = tamanhoSaida - tamanhoDoTexto;
+			for (int i = 0; i < quantidadeZeros; i++) {
+				prefixo += 0;
+			}
+		}
+		return prefixo + textoOriginal;
+	}
+	
+	public String RetornaComVazioAFrente(int tamanhoSaida, Object textoOriginal) {
+		String prefixo = "";
+		Integer tamanhoDoTexto = textoOriginal.toString().length();
+		if (tamanhoDoTexto < tamanhoSaida) {
+			int quantidadeZeros = tamanhoSaida - tamanhoDoTexto;
+			for (int i = 0; i < quantidadeZeros; i++) {
+				prefixo += " ";
+			}
+		}
+		return prefixo + textoOriginal;
+	}
+	
+	public String RetornaComVazioAtras(int tamanhoSaida, Object textoOriginal) {
+		String prefixo = "";
+		Integer tamanhoDoTexto = textoOriginal.toString().length();
+		if (tamanhoDoTexto < tamanhoSaida) {
+			int quantidadeZeros = tamanhoSaida - tamanhoDoTexto;
+			for (int i = 0; i < quantidadeZeros; i++) {
+				prefixo += " ";
+			}
+		}
+		return  textoOriginal + prefixo;
+	}
+	
 }
