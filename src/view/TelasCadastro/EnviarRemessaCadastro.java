@@ -70,8 +70,7 @@ public class EnviarRemessaCadastro {
 				
 				new EnvioDAO().adiciona(envio);
 				
-				///  Parte 2: Cria arquivo de texto exportação
-				
+				///  Parte 2: Cria arquivo de texto exportação				
 							
 			}
 
