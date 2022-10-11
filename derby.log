@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Sun Oct 09 17:05:34 BRT 2022:
- Inicializando o Derby versão The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instância a816c00e-0183-be5a-5132-000006cd6030
-no diretório de banco de dados C:\Users\josue\eclipse-workspace\SistemaDeArrecadacaoDeTerceiros\SistemaDeArrecadacaoDeTerceiros\acustraprograma 
+Mon Oct 10 21:17:41 BRT 2022:
+ Inicializando o Derby versão The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instância a816c00e-0183-c467-7fed-0000070f95f0
+no diretório de banco de dados C:\Users\josue\eclipse-workspace\SistemaArrecadacaoAtual\acustraprograma 
 
 java.vendor=Oracle Corporation
 java.runtime.version=11.0.13+10-LTS-370
-user.dir=C:\Users\josue\eclipse-workspace\SistemaDeArrecadacaoDeTerceiros\SistemaDeArrecadacaoDeTerceiros
+user.dir=C:\Users\josue\eclipse-workspace\SistemaArrecadacaoAtual
 os.name=Windows 10
 os.arch=amd64
 os.version=10.0

@@ -15,7 +15,10 @@ public class FooterDAO {
 	private Connection connection = ConnectionFactory.getConnection();
 
 	public static void main(String[] args) {
-		new FooterDAO().TestesTabelas();	
+		
+		new FooterDAO().CriarTabelaFooter();
+		//new FooterDAO().TestesTabelas();	
+		
 	}
 	
 	

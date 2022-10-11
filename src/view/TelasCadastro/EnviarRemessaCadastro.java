@@ -38,115 +38,41 @@ public class EnviarRemessaCadastro {
 		JButton gerarArquivoParaRemessaBotao = new JButton("Gerar arquivo para Remessa");
 		
 		gerarArquivoParaRemessaBotao.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {			
+			public void actionPerformed(ActionEvent e) {							
 				
-				Envio envio = new Envio();				
-				Footer footer = new Footer();
+				///  Parte 1: Salva envio no banco
+				
+				Envio envio = new Envio();
+				
+				//Cabeçalho e Rodapé
 				Header header = new Header();
+				Footer footer = new Footer();				
 				
-				footer.setEnvio(envio);
+				
+				///Cabeçalho
+				header.setNumeroSequencialEnvio(new HeaderDAO().SelecionarMaiorSequencialEnvio() + 1);
+				header.setDataEnvio(Calendar.getInstance());			
+				envio.setHeader(header);				
+				
+
+				///Corpo Do Envio
+				List<DetailConveniado> listaDeDetail = new DetailConveniadoDAO().resgatarLista();
+				
+				for (DetailConveniado detailConveniado : listaDeDetail) 
+				{
+					envio.addDetailConveniado(detailConveniado);
+				}
+				
+				
+				///Rodapé
+				footer.setEnvio(envio);				
 				envio.setFooter(footer);
 				
-				header.setEnvio(envio);
-				envio.setHeader(header);
+				new EnvioDAO().adiciona(envio);
 				
-				FooterDAO footerDAO = new FooterDAO();				
-				footerDAO.adiciona(footer);
+				///  Parte 2: Cria arquivo de texto exportação
 				
-				HeaderDAO headerDAO = new HeaderDAO();
-				headerDAO.adiciona(header);
-				
-				EnvioDAO envioDAO = new EnvioDAO();					
-				envioDAO.adiciona(envio);
-				
-				DetailConveniadoDAO detailDao = new DetailConveniadoDAO();				
-				List<DetailConveniado>listaDetail = detailDao.resgatarLista();
-				
-				
-				for(DetailConveniado detailConveniado : listaDetail) 
-				{
-					if(!detailConveniado.isEnviado()) {
-					envio.addDetailConveniado(detailConveniado);
-					}
-				}				
-				
-				/*
-				for(DetailConveniado detailConveniado : listaDetail) 
-				{
-					envio.addDetailConveniado(detailConveniado);
-				}								
-				*/
-				
-				
-				//// ?
-											
-				
-				StringBuilder saidaDeTexto = new StringBuilder();			
-				
-				for (DetailConveniado detailConveniado : listaDetail) 
-				{
-					saidaDeTexto.append("2");
-					
-					saidaDeTexto.append(detailConveniado.getCodigoUnidadeConsumidora());
-					saidaDeTexto.append(detailConveniado.getValorLancamento());
-					
-					Date dataGeracaoRegistro = new Date(detailConveniado.getDataGeracaoRegistro().getTimeInMillis());					
-					
-					saidaDeTexto.append(dataGeracaoRegistro.getDay());					
-					saidaDeTexto.append(dataGeracaoRegistro.getMonth());
-					saidaDeTexto.append(dataGeracaoRegistro.getYear());					
-					
-				
-					saidaDeTexto.append(detailConveniado.getComandoMovimento());
-					saidaDeTexto.append(detailConveniado.getCodigoContaGerencial());
-					saidaDeTexto.append(detailConveniado.getCoberturaOcorrencia());
-					saidaDeTexto.append(detailConveniado.getDescricaoCoberturaOcorrencia());
-					
-					saidaDeTexto.append(espacoEmBranco(10));
-					saidaDeTexto.append(espacoEmBranco(6));
-					
-					CPF_CNPJ cpfCnpj = detailConveniado.getCpfCnpj();
-					
-					if(cpfCnpj.equals(DetailConveniado.CPF_CNPJ.CPF)) {
-					saidaDeTexto.append(detailConveniado.getCpfCliente());
-					}
-					else if(cpfCnpj.equals(DetailConveniado.CPF_CNPJ.CNPJ)) {
-					saidaDeTexto.append(detailConveniado.getCnpjCliente());
-					}					
-					
-					
-					Calendar mesVigencia = detailConveniado.getMesVigencia();
-					
-					dataGeracaoRegistro = new Date(mesVigencia.getTimeInMillis());					
-					
-					saidaDeTexto.append(dataGeracaoRegistro.getDay());					
-					saidaDeTexto.append(dataGeracaoRegistro.getMonth());
-					saidaDeTexto.append(dataGeracaoRegistro.getYear());			
-									
-					mesVigencia = detailConveniado.getMesFimVigencia();
-					/*
-					saidaDeTexto.append(detailConveniado.getMesVigencia());					
-					saidaDeTexto.append(detailConveniado.getMesFimVigencia());
-					*/
-					
-					saidaDeTexto.append(dataGeracaoRegistro.getDay());					
-					saidaDeTexto.append(dataGeracaoRegistro.getMonth());
-					saidaDeTexto.append(dataGeracaoRegistro.getYear());	
-					
-					if(cpfCnpj.equals(DetailConveniado.CPF_CNPJ.CNPJ)) 
-					{
-					saidaDeTexto.append(detailConveniado.getComplementoCNPJ());
-					}		
-					else 
-					{
-					saidaDeTexto.append(espacoEmBranco(2));
-					}
-					saidaDeTexto.append(espacoEmBranco(2));
-					saidaDeTexto.append(espacoEmBranco(13));
-					saidaDeTexto.append(espacoEmBranco(10));					
-					saidaDeTexto.append(detailConveniado.getNumeroSequencialRegistro());		
-				}								
-				System.out.println(saidaDeTexto);				
+							
 			}
 
 			private Object espacoEmBranco(int numero) {

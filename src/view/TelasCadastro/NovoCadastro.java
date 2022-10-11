@@ -2,6 +2,7 @@ package view.TelasCadastro;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +18,7 @@ import com.toedter.calendar.JDateChooser;
 
 import dao.DetailConveniadoDAO;
 import model.DetailConveniado;
-import model.DetailConveniado.CPF_CPNJ;
+import model.DetailConveniado.CPF_CNPJ;
 import model.ModeloDeValidacaoTextField;
 import util.Util;
 
@@ -159,10 +160,12 @@ public class NovoCadastro {
 				 */
 				String dataDeCadastro = dataAtualDeCadastroText.getText();
 
+				System.out.println("Data de cadastro:  " + dataDeCadastro);
+				/*
 				dataDeCadastro = Util.SomenteNumeros(dataDeCadastro);
 				detailConveniado.setDataGeracaoRegistro(Integer.getInteger(dataDeCadastro));
-
-				System.out.println(dataDeCadastro);
+				*/
+				
 
 				/*
 				 * Campo 2.05: Comando do Movimento Comando de Movimento CHAR TextField:
@@ -255,11 +258,13 @@ public class NovoCadastro {
 					if (ultimoModeloEValido) {
 
 						if (cpfAtivado) {
-							detailConveniado.setCpfCnpj(CPF_CPNJ.CPF);
-							detailConveniado.setCpfCliente(Long.parseLong(cpfCNPJModelo.getTextField().getText()));
+							detailConveniado.setCpfCnpj(CPF_CNPJ.CPF);
+							BigDecimal bigDecimal = new BigDecimal(cpfCNPJModelo.getTextField().getText());
+							detailConveniado.setCpfCliente(bigDecimal);
 						} else {
-							detailConveniado.setCpfCnpj(CPF_CPNJ.CNPJ);
-							detailConveniado.setCnpjCliente(Long.parseLong(cpfCNPJModelo.getTextField().getText()));
+							detailConveniado.setCpfCnpj(CPF_CNPJ.CNPJ);
+							BigDecimal bigDecimal = new BigDecimal(cpfCNPJModelo.getTextField().getText());
+							detailConveniado.setCnpjCliente(bigDecimal);
 						}
 					}
 				}

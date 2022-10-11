@@ -228,22 +228,28 @@ public class HeaderDAO
 		connection.close();
 	}
 	
-	public Integer SelecionarMaiorID() throws SQLException {
+	public Integer SelecionarMaiorSequencialEnvio()  {
 		
-		Integer id = 0;
+		Integer sequencialEnvio = 0;
+		try {
 		
-		String sql = "select max(id) from TABLE header";
+		String sql = "select max(sequencialEnvio) from TABLE header";
 
-		PreparedStatement stmt = connection.prepareStatement(sql);
+		PreparedStatement stmt;
+			stmt = connection.prepareStatement(sql);
 		
 		stmt = connection.prepareStatement(sql);
-		ResultSet rs = stmt.executeQuery();
-		
+		ResultSet rs = stmt.executeQuery();		
 		
 		if (rs.next()) {
-			id = rs.getInt("max_id") + 1;
+			sequencialEnvio = rs.getInt("max_id") + 1;
 		}
-		return id;
+		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return sequencialEnvio;
 	}
 
 
